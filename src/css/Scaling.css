@@ -1,0 +1,142 @@
+@charset "UTF-8";
+
+/* Layout */
+.scaling-root {
+	position: relative;
+	height: 100vh;
+	width: 100%;
+	background: #ffffff;
+	box-sizing: border-box;
+	padding-left: 48px; /* スライダー幅＋カウンター分の余白（必要に応じて調整） */
+}
+
+.scaling-content {
+	position: relative;
+	height: 100%;
+	display: block;
+}
+
+.scaling-page {
+	position: absolute;
+	inset: 0;           /* top:0; right:0; bottom:0; left:0; */
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: flex-start;
+	font-size: 3.2rem;
+	color: #222;
+	opacity: 0;
+	transform: translateY(12px);
+	transition: opacity 240ms ease, transform 240ms ease;
+	overflow-y: auto;
+	padding: 24px;
+	box-sizing: border-box;
+	pointer-events: none;   /* 非表示時に操作不可 */
+	visibility: hidden;     /* 非表示にしてレイアウトに影響させない */
+}
+
+.scaling-page.active {
+	opacity: 1;
+	transform: translateY(0);
+	pointer-events: auto;
+	visibility: visible;
+    width: 96vw;
+}
+
+.page-title {
+	text-align: left;
+	margin: 0 0 12px 0;
+	font-size: 2.6rem;
+}
+
+/* 説明文の見た目調整（任意） */
+.page-description {
+	max-width: none;
+	width: 100%;
+	/*font-size: 1rem;
+	line-height: 1.6;
+	color: #333;*/
+	margin-top: 8px;
+}
+
+/* Slider
+   左端に表示。スライダー本体はラッパーで回転させるが translateX(-100%) を除去して
+   ビューポート外へはみ出さないようにする。カウンターはスライダーの右側に表示。 */
+.scaling-slider-wrapper {
+	position: fixed;
+	left: 8px;
+	top: 24px; /* 上端との余白を確保 */
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 8px;
+	z-index: +1;
+	padding: 4px;
+	pointer-events: auto;
+}
+
+/* 回転ラッパーはそのまま置いても問題ない（将来的に使う場合） */
+.vertical-rotator {
+	display: block;
+}
+
+/* 縦スライダーの本体（回転をやめ、縦表示用の appearance を使う） */
+.vertical-slider {
+	-webkit-appearance: slider-vertical; /* Chrome/Edge 用 */
+	appearance: slider-vertical;
+	writing-mode: bt-lr; /* Firefox 補助（ブラウザ差あり） */
+	width: 12px;         /* 見た目の横幅（トラック幅） */
+	height: 240px;       /* 縦の長さ（必要に応じて調整） */
+	margin: 0;
+	padding: 0;
+	cursor: pointer;
+	background: transparent;
+}
+
+/* webkit トラック/サム調整 */
+.vertical-slider::-webkit-slider-runnable-track {
+	width: 6px;
+	height: 100%;
+	background: #ddd;
+	border-radius: 4px;
+}
+
+.vertical-slider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	width: 18px;
+	height: 18px;
+	background: #3578e5;
+	border-radius: 50%;
+	margin-left: -6px; /* サムをトラック中央に合わせる */
+}
+
+/* Firefox 用（ブラウザ差があるため見た目は若干異なる可能性あり） */
+.vertical-slider::-moz-range-track {
+	width: 6px;
+	height: 100%;
+	background: #ddd;
+	border-radius: 4px;
+}
+
+.vertical-slider::-moz-range-thumb {
+	width: 18px;
+	height: 18px;
+	background: #3578e5;
+	border-radius: 50%;
+}
+
+/* カウンター */
+.slider-counter {
+/*	min-width: 48px;
+	text-align: center;
+	font-size: 0.95rem;
+	color: #333;
+	margin-left: 8px;
+*/
+}
+
+/* 小画面では非表示にする等の処理を維持 */
+@media (max-width: 640px) {
+	.vertical-slider { display: none; }
+}
+
