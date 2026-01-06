@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+body{
+	/*font-family: YakuHanJPs, Arial, Meiryo, sans-serif;*/
+	font-family: "Roboto", "Noto Sans JP", "Hiragino Sans", sans-serif;
+}
 /* Layout */
 .scaling-root {
 	position: relative;
@@ -7,7 +11,7 @@
 	width: 100%;
 	background: #ffffff;
 	box-sizing: border-box;
-	padding-left: 48px; /* スライダー幅＋カウンター分の余白（必要に応じて調整） */
+	padding-left: 48px;
 }
 
 .scaling-content {
@@ -18,7 +22,7 @@
 
 .scaling-page {
 	position: absolute;
-	inset: 0;           /* top:0; right:0; bottom:0; left:0; */
+	inset: 0;
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
@@ -31,8 +35,8 @@
 	overflow-y: auto;
 	padding: 24px;
 	box-sizing: border-box;
-	pointer-events: none;   /* 非表示時に操作不可 */
-	visibility: hidden;     /* 非表示にしてレイアウトに影響させない */
+	pointer-events: none;
+	visibility: hidden;
 }
 
 .scaling-page.active {
@@ -40,103 +44,135 @@
 	transform: translateY(0);
 	pointer-events: auto;
 	visibility: visible;
-    width: 96vw;
+	width: 96vw;
 }
 
 .page-title {
+	width: 900px;
 	text-align: left;
-	margin: 0 0 12px 0;
-	font-size: 2.6rem;
+	margin: 1.0em auto 1.0em auto;
+	font-size: 2.0rem;
 }
 
-/* 説明文の見た目調整（任意） */
+.chapter-title{
+	width: 900px;
+	text-align: left;
+	margin: 2.0em auto 1.0em auto;
+	font-size: 1.5rem;
+}
+
+/* 説明文 */
 .page-description {
-	max-width: none;
-	width: 100%;
-	/*font-size: 1rem;
-	line-height: 1.6;
-	color: #333;*/
-	margin-top: 8px;
+	width: 900px;
+	/*max-width: none;*/
+	font-size: 1.15rem;
+	/*font-weight: 400;*/
+	line-height: 2.5;
+	margin: 8px auto 0 auto;
+	color: #2c2e31;
 }
 
-/* Slider
-   左端に表示。スライダー本体はラッパーで回転させるが translateX(-100%) を除去して
-   ビューポート外へはみ出さないようにする。カウンターはスライダーの右側に表示。 */
+/* Slider*/
 .scaling-slider-wrapper {
-	position: fixed;
-	left: 8px;
-	top: 24px; /* 上端との余白を確保 */
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	gap: 8px;
-	z-index: +1;
-	padding: 4px;
-	pointer-events: auto;
+    position: fixed;
+    left: 8px;         /* 左端位置はそのまま */
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: +1;
+    padding: 4px;
+    pointer-events: auto;
 }
 
-/* 回転ラッパーはそのまま置いても問題ない（将来的に使う場合） */
+/* ラッパーは左端のスロット幅を確保するだけにする */
 .vertical-rotator {
-	display: block;
+    position: relative;
+    width: 12px;       /* 左側のコラム幅（トラック幅と合わせる） */
+    height: 50vh;      /* スライダーの高さ */
 }
 
-/* 縦スライダーの本体（回転をやめ、縦表示用の appearance を使う） */
+/* ネイティブ縦スライダーを無効化して自前で回転させる */
+/* 位置を絶対配置してラッパー内の左端に収める */
 .vertical-slider {
-	-webkit-appearance: slider-vertical; /* Chrome/Edge 用 */
-	appearance: slider-vertical;
-	writing-mode: bt-lr; /* Firefox 補助（ブラウザ差あり） */
-	width: 12px;         /* 見た目の横幅（トラック幅） */
-	height: 240px;       /* 縦の長さ（必要に応じて調整） */
-	margin: 0;
-	padding: 0;
-	cursor: pointer;
-	background: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 50vh;    /* スライダーの長さ（回転前の横幅） */
+    height: 12px;   /* トラック厚さ（回転後は縦幅に見える） */
+    transform: translate(-50%, -50%) rotate(-90deg);
+    transform-origin: center center;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
 }
 
-/* webkit トラック/サム調整 */
+/* 回転後の横向きトラック（見た目は縦トラック） */
 .vertical-slider::-webkit-slider-runnable-track {
-	width: 6px;
-	height: 100%;
-	background: #ddd;
-	border-radius: 4px;
+    width: 100%;
+    height: 12px;
+    background: #ddd;
+    border-radius: 99px;
 }
 
+/* 葉巻形サム（WebKit） */
 .vertical-slider::-webkit-slider-thumb {
-	-webkit-appearance: none;
-	width: 18px;
-	height: 18px;
-	background: #3578e5;
-	border-radius: 50%;
-	margin-left: -6px; /* サムをトラック中央に合わせる */
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 28px;
+    background: #3578e5;
+    border-radius: 99px;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    margin-top: -8px; /* トラック中央に合わせる調整 */
 }
 
-/* Firefox 用（ブラウザ差があるため見た目は若干異なる可能性あり） */
+/* Firefox 用 */
 .vertical-slider::-moz-range-track {
-	width: 6px;
-	height: 100%;
-	background: #ddd;
-	border-radius: 4px;
+    width: 100%;
+    height: 12px;
+    background: #ddd;
+    border-radius: 999px;
 }
 
 .vertical-slider::-moz-range-thumb {
-	width: 18px;
-	height: 18px;
-	background: #3578e5;
-	border-radius: 50%;
+    width: 16px;
+    height: 28px;
+    background: #3578e5;
+    border-radius: 999px;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
 
 /* カウンター */
 .slider-counter {
-/*	min-width: 48px;
 	text-align: center;
-	font-size: 0.95rem;
+	font-size: 3.0rem;
 	color: #333;
-	margin-left: 8px;
-*/
+	margin-top: 4px;
+
+	sup{
+		position: relative;
+		top: -0.6em; /* 上に移動する量。必要なら -0.4em〜-0.9em に調整 */
+		font-size: 1.25rem;
+		line-height: 1;
+		display: inline-block;
+	}
+
+	.unit{
+		font-size: 0.5em;
+		margin-left: 2px;
+	}
 }
 
 /* 小画面では非表示にする等の処理を維持 */
 @media (max-width: 640px) {
-	.vertical-slider { display: none; }
+	.vertical-slider {
+		display: none;
+	}
 }
-
