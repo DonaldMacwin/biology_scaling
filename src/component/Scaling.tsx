@@ -77,10 +77,10 @@ export default function Scaling(): ReactElement {
                         aria-label="画面切替スライダー"
                     />
                 </div>
-                {/* +6 / +7 はカウンター非表示 */}
+                {/* +6 / +7 は乗数カウンター非表示 */}
                 {!(diffRender === 6 || diffRender === 7) ? (
                     <div className="slider-counter">
-                        1<sup>{diffRender === 0 ? 1 : diffRender}</sup><span className="unit">M</span>
+                        10<sup>{diffRender === 0 ? 1 : diffRender}</sup><span className="unit">M</span>
                     </div>
                 ) : null}
             </div>
