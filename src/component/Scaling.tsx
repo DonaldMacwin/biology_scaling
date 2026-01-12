@@ -1,36 +1,39 @@
 import { useState, useEffect, type ReactElement } from "react";
 import "../css/Scaling.css";
 
-const TOTAL_PAGES = 15;
+const TOTAL_PAGES = 11;
 const CENTER = Math.ceil(TOTAL_PAGES / 2);
 
 export default function Scaling(): ReactElement {
     const [sliderPos, setSliderPos] = useState<number>(CENTER);
     const [plusminusHtml, setPlusminusHtml] = useState<string>("");
+    const [customExp, setCustomExp] = useState<string | null>(null);
+    const [editingExp, setEditingExp] = useState<boolean>(false);
+    const [editValue, setEditValue] = useState<string>("");
 
     useEffect(() => {
         const diff = sliderPos - CENTER;
 
-        const path = (() => {
-            if (diff === 0) {
-                return "/html/default.html";
-            } else if (diff > 0 && diff <= 5) {
-                const idx = diff - 1;
-                const pad = String(idx).padStart(2, "0");
-                return `/html/power+${pad}.html`;
-            } else if (diff > 0 && (diff === 6 || diff === 7)) {
-                // +6 / +7 は存在しないので非表示
-                return null;
-            } else if (diff < 0 && Math.abs(diff) <= 7) {
-                const pad = String(Math.abs(diff)).padStart(2, "0");
-                return `/html/power-${pad}.html`;
-            } else {
-                return null;
-            }
-        })();
+        const POS_PATH_MAP: Record<number, string> = {
+            1: "/html/power+01.html",
+            2: "/html/power+02.html",
+            3: "/html/power+03.html",
+            4: "/html/power+04.html",
+            5: "/html/power+05.html",
+        };
 
-        if (path) {
-            fetch(path)
+        const NEG_PATH_MAP: Record<number, string> = {};
+        NEG_PATH_MAP[-1] = "/html/power-01.html";
+        NEG_PATH_MAP[-2] = "/html/power-02.html";
+        NEG_PATH_MAP[-3] = "/html/power-03.html";
+        NEG_PATH_MAP[-4] = "/html/power-04.html";
+        NEG_PATH_MAP[-5] = "/html/power-05.html";
+
+        const mappingPath =
+            diff === 0 ? "/html/default.html" : diff > 0 ? POS_PATH_MAP[diff] : NEG_PATH_MAP[diff];
+
+        if (mappingPath) {
+            fetch(mappingPath)
                 .then((r) => r.text())
                 .then((txt) => {
                     const fixed = txt.replace(/className=/g, "class=");
@@ -40,11 +43,34 @@ export default function Scaling(): ReactElement {
                 })
                 .catch(() => setPlusminusHtml(""));
         } else {
+            // 同期的な setState によるカスケードレンダーを避けるため非同期で更新する
             setTimeout(() => setPlusminusHtml(""), 0);
         }
     }, [sliderPos]);
 
     const diffRender = sliderPos - CENTER;
+    // <sup>タグ表示用は文字列マッピング
+    const POS_MAP_DISPLAY: Record<number, string> = {
+        1: "1〜3",
+        2: "7",
+        3: "11",
+        4: "21",
+        5: "36",
+    };
+    const NEG_MAP_DISPLAY: Record<string, string> = {
+        "-1": "-1",
+        "-2": "-5",
+        "-3": "-9",
+        "-4": "-16",
+        "-5": "-29",
+    };
+    const mappedDisplay: string =
+        diffRender === 0
+            ? "1"
+            : diffRender > 0
+            ? POS_MAP_DISPLAY[diffRender] ?? String(diffRender)
+            : NEG_MAP_DISPLAY[String(diffRender)] ?? String(diffRender);
+    const displayLabel: string = customExp !== null ? customExp : mappedDisplay;
 
     return (
         <div className="scaling-root">
@@ -70,17 +96,58 @@ export default function Scaling(): ReactElement {
                         onChange={(e) => {
                             const v = Number(e.target.value);
                             const proposedDiff = v - CENTER;
-                            // +6 / +7 は選択させない（無視）、負側は -7 まで許可
-                            if (proposedDiff === 6 || proposedDiff === 7) return;
+                            if (proposedDiff > 5 || proposedDiff < -5) return;
                             setSliderPos(v);
                         }}
                         aria-label="画面切替スライダー"
                     />
                 </div>
-                {/* +6 / +7 は乗数カウンター非表示 */}
-                {!(diffRender === 6 || diffRender === 7) ? (
+                {Math.abs(diffRender) <= 5 ? (
                     <div className="slider-counter">
-                        10<sup>{diffRender === 0 ? 1 : diffRender}</sup><span className="unit">M</span>
+                        10
+                        {editingExp ? (
+                            <input
+                                className="exp-edit"
+                                type="text"
+                                value={editValue}
+                                onChange={(e) => setEditValue(e.target.value)}
+                                onBlur={() => {
+                                    const v = editValue.trim();
+                                    if (v === "") {
+                                        setCustomExp(null);
+                                    } else {
+                                        setCustomExp(v);
+                                    }
+                                    setEditingExp(false);
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        const v = editValue.trim();
+                                        if (v === "") {
+                                            setCustomExp(null);
+                                        } else {
+                                            setCustomExp(v);
+                                        }
+                                        setEditingExp(false);
+                                    } else if (e.key === "Escape") {
+                                        setEditingExp(false);
+                                    }
+                                }}
+                                style={{ width: "3.2rem", fontSize: "1.25rem", marginLeft: "4px" }}
+                                autoFocus
+                            />
+                        ) : (
+                            <sup
+                                onClick={() => {
+                                    setEditValue(displayLabel);
+                                    setEditingExp(true);
+                                }}
+                                style={{ cursor: "pointer" }}
+                            >
+                                {displayLabel}
+                            </sup>
+                        )}
+                        <span className="unit">M</span>
                     </div>
                 ) : null}
             </div>
