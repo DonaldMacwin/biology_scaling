@@ -51,15 +51,15 @@ export default function Scaling(): ReactElement {
     const diffRender = sliderPos - CENTER;
     // <sup>タグ表示用は文字列マッピング
     const POS_MAP_DISPLAY: Record<number, string> = {
-        1: "1〜3",
-        2: "7",
-        3: "11",
-        4: "21",
-        5: "36",
+        1: "2",
+        2: "6",
+        3: "9",
+        4: "12",
+        5: "24",
     };
     const NEG_MAP_DISPLAY: Record<string, string> = {
         "-1": "-1",
-        "-2": "-5",
+        "-2": "-4",
         "-3": "-9",
         "-4": "-16",
         "-5": "-29",
@@ -71,6 +71,28 @@ export default function Scaling(): ReactElement {
             ? POS_MAP_DISPLAY[diffRender] ?? String(diffRender)
             : NEG_MAP_DISPLAY[String(diffRender)] ?? String(diffRender);
     const displayLabel: string = customExp !== null ? customExp : mappedDisplay;
+
+    // 追加: ページトップへスクロールするハンドラ
+    const scrollToTop = (): void => {
+        // まずコンポーネント内のスクロール可能な要素を探してスクロールする
+        if (typeof document !== "undefined") {
+            const active = document.querySelector<HTMLElement>(".scaling-page.active");
+            if (active && typeof active.scrollTo === "function") {
+                active.scrollTo({ top: 0, behavior: "smooth" });
+                return;
+            }
+            // scaling-content がスクロールコンテナの場合のフォールバック
+            const content = document.querySelector<HTMLElement>(".scaling-content");
+            if (content && typeof content.scrollTo === "function") {
+                content.scrollTo({ top: 0, behavior: "smooth" });
+                return;
+            }
+        }
+        // 最終フォールバックでウィンドウをスクロール
+        if (typeof window !== "undefined") {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    };
 
     return (
         <div className="scaling-root">
@@ -151,6 +173,17 @@ export default function Scaling(): ReactElement {
                     </div>
                 ) : null}
             </div>
+
+            {/* 追加: ページTOPへ戻るボタン */}
+            <button
+                type="button"
+                className="back-to-top"
+                onClick={scrollToTop}
+                aria-label="ページTOPへ戻る"
+                title="ページTOPへ戻る"
+            >
+                ▲
+            </button>
         </div>
     );
 }
