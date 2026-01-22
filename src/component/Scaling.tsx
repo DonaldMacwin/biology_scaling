@@ -11,6 +11,7 @@ export default function Scaling(): ReactElement {
     const [editingExp, setEditingExp] = useState<boolean>(false);
     const [editValue, setEditValue] = useState<string>("");
 
+    // スライダー位置に応じた HTML コンテンツを読み込む
     useEffect(() => {
         const diff = sliderPos - CENTER;
 
@@ -43,26 +44,26 @@ export default function Scaling(): ReactElement {
                 })
                 .catch(() => setPlusminusHtml(""));
         } else {
-            // 同期的な setState によるカスケードレンダーを避けるため非同期で更新する
+            // 同期的な setState によるカスケードレンダーを避けるため非同期で更新
             setTimeout(() => setPlusminusHtml(""), 0);
         }
     }, [sliderPos]);
 
+    // スライダー位置から表示用指数を決定する
     const diffRender = sliderPos - CENTER;
-    // <sup>タグ表示用は文字列マッピング
     const POS_MAP_DISPLAY: Record<number, string> = {
         1: "2",
-        2: "6",
-        3: "9",
-        4: "12",
-        5: "24",
+        2: "3",
+        3: "5",
+        4: "8",
+        5: "10",
     };
     const NEG_MAP_DISPLAY: Record<string, string> = {
-        "-1": "-1",
+        "-1": "0",
         "-2": "-4",
-        "-3": "-9",
-        "-4": "-16",
-        "-5": "-29",
+        "-3": "-6",
+        "-4": "-8",
+        "-5": "-10",
     };
     const mappedDisplay: string =
         diffRender === 0
@@ -72,23 +73,20 @@ export default function Scaling(): ReactElement {
             : NEG_MAP_DISPLAY[String(diffRender)] ?? String(diffRender);
     const displayLabel: string = customExp !== null ? customExp : mappedDisplay;
 
-    // 追加: ページトップへスクロールするハンドラ
+    // ページトップへスクロールするハンドラ
     const scrollToTop = (): void => {
-        // まずコンポーネント内のスクロール可能な要素を探してスクロールする
         if (typeof document !== "undefined") {
             const active = document.querySelector<HTMLElement>(".scaling-page.active");
             if (active && typeof active.scrollTo === "function") {
                 active.scrollTo({ top: 0, behavior: "smooth" });
                 return;
             }
-            // scaling-content がスクロールコンテナの場合のフォールバック
             const content = document.querySelector<HTMLElement>(".scaling-content");
             if (content && typeof content.scrollTo === "function") {
                 content.scrollTo({ top: 0, behavior: "smooth" });
                 return;
             }
         }
-        // 最終フォールバックでウィンドウをスクロール
         if (typeof window !== "undefined") {
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
@@ -174,7 +172,6 @@ export default function Scaling(): ReactElement {
                 ) : null}
             </div>
 
-            {/* 追加: ページTOPへ戻るボタン */}
             <button
                 type="button"
                 className="back-to-top"
