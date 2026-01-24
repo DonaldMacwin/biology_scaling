@@ -2,7 +2,8 @@
 
 body{
 	/*font-family: YakuHanJPs, Arial, Meiryo, sans-serif;*/
-	font-family: "Roboto", "Noto Sans JP", "Hiragino Sans", sans-serif;
+	/*font-family: "Roboto", "Noto Sans JP", "Hiragino Sans", sans-serif;*/
+	font-family: "Roboto", YuGothic, "Yu Gothic", "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3", "ＭＳ Ｐゴシック", "MS PGothic", Helvetica, "Lucida Grande", "Lucida Sans Unicode", Arial, Verdana, sans-serif;
 }
 /* Layout */
 .scaling-root {
@@ -47,22 +48,28 @@ body{
 	width: 96vw;
 }
 
-.page-title {
+/* メインテキストの設定 */
+.page-description {
 	width: 900px;
+	font-size: 1.2rem;
+	font-weight: 400;
+	line-height: 2.5;
+	margin: 8px auto 0 auto;
+	color: #2c2e31;
+}
+.page-title {
 	text-align: left;
 	margin: 3.0em auto 1.0em auto;
 	font-size: 2.0rem;
 }
 
 .chapter-title{
-	width: 900px;
 	text-align: left;
 	margin: 2.0em auto 1.0em auto;
 	font-size: 1.5rem;
 }
 
 .index-box {
-	width: 900px;
 	margin: 2.0em auto 0 auto;
 	padding: 2.0em;
 	background: #efefef;
@@ -76,20 +83,9 @@ body{
 	.index-subheading{
 		border-bottom: 1px solid #ccc;
 		margin-left: 1.5em;
-		font-weight: normal;
 		font-size: 0.9em;
+		margin-bottom: 0.25em;
 	}
-}
-
-/* 説明文 */
-.page-description {
-	width: 900px;
-	/*max-width: none;*/
-	font-size: 1.15rem;
-	/*font-weight: 400;*/
-	line-height: 2.5;
-	margin: 8px auto 0 auto;
-	color: #2c2e31;
 }
 .data-table {
 	width: 100%;
@@ -110,10 +106,10 @@ body{
 	}
 }
 
-/* Slider*/
+/* スケールスライダー設定*/
 .scaling-slider-wrapper {
     position: fixed;
-    left: 8px;         /* 左端位置はそのまま */
+    left: 8px;
     top: 24px;
     display: flex;
     flex-direction: column;
@@ -124,15 +120,12 @@ body{
     pointer-events: auto;
 }
 
-/* ラッパーは左端のスロット幅を確保するだけにする */
 .vertical-rotator {
     position: relative;
     width: 12px;       /* 左側のコラム幅（トラック幅と合わせる） */
     height: 50vh;      /* スライダーの高さ */
 }
 
-/* ネイティブ縦スライダーを無効化して自前で回転させる */
-/* 位置を絶対配置してラッパー内の左端に収める */
 .vertical-slider {
     -webkit-appearance: none;
     appearance: none;
@@ -141,7 +134,7 @@ body{
     top: 50%;
     width: 50vh;    /* スライダーの長さ（回転前の横幅） */
     height: 12px;   /* トラック厚さ（回転後は縦幅に見える） */
-    transform: translate(-50%, -50%) rotate(-90deg);
+    transform: translate(-50%, -50%) rotate(-90deg); /* 90度回転 */
     transform-origin: center center;
     margin: 0;
     padding: 0;
@@ -187,10 +180,11 @@ body{
     box-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
 
-/* カウンター */
+/* スライダーカウンターの表示設定 */
 .slider-counter {
 	text-align: center;
 	font-size: 3.0rem;
+	font-family: "Roboto", "Noto Sans JP", "Hiragino Sans", sans-serif;
 	color: #333;
 	margin-top: 4px;
 
@@ -225,11 +219,7 @@ body{
     opacity: 0.95;
 }
 
-.back-to-top:hover {
-    transform: translateY(-3px);
-}
-
-/* 小画面では小さくする */
+/* 小画面ではTOPへ戻るボタンを小さくする */
 @media (max-width: 640px) {
     .back-to-top {
         left: 12px;

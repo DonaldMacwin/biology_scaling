@@ -54,7 +54,7 @@ export default function Scaling(): ReactElement {
     const POS_MAP_DISPLAY: Record<number, string> = {
         1: "2",
         2: "3",
-        3: "5",
+        3: "6",
         4: "8",
         5: "10",
     };
@@ -176,8 +176,8 @@ export default function Scaling(): ReactElement {
                 type="button"
                 className="back-to-top"
                 onClick={scrollToTop}
-                aria-label="ページTOPへ戻る"
-                title="ページTOPへ戻る"
+                aria-label="ページTOPへ"
+                title="ページTOPへ"
             >
                 ▲
             </button>
