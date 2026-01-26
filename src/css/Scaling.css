@@ -1,10 +1,11 @@
 @charset "UTF-8";
 
-body{
+body {
 	/*font-family: YakuHanJPs, Arial, Meiryo, sans-serif;*/
 	/*font-family: "Roboto", "Noto Sans JP", "Hiragino Sans", sans-serif;*/
 	font-family: "Roboto", YuGothic, "Yu Gothic", "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3", "ＭＳ Ｐゴシック", "MS PGothic", Helvetica, "Lucida Grande", "Lucida Sans Unicode", Arial, Verdana, sans-serif;
 }
+
 /* Layout */
 .scaling-root {
 	position: relative;
@@ -57,13 +58,19 @@ body{
 	margin: 8px auto 0 auto;
 	color: #2c2e31;
 }
+
 .page-title {
 	text-align: left;
 	margin: 3.0em auto 1.0em auto;
 	font-size: 2.0rem;
+
+	img {
+		max-width: 250px;
+		margin: 0 0 1em 0;
+	}
 }
 
-.chapter-title{
+.chapter-title {
 	text-align: left;
 	margin: 2.0em auto 1.0em auto;
 	font-size: 1.5rem;
@@ -80,20 +87,22 @@ body{
 		margin-bottom: 0.5em;
 	}
 
-	.index-subheading{
+	.index-subheading {
 		border-bottom: 1px solid #ccc;
 		margin-left: 1.5em;
 		font-size: 0.9em;
 		margin-bottom: 0.25em;
 	}
 }
+
 .data-table {
 	width: 100%;
 	margin: 1.0em auto 0 auto;
 	border-collapse: collapse;
 	box-sizing: border-box;
 
-	th, td {
+	th,
+	td {
 		border: 1px solid #ccc;
 		padding: 0.5em 0.5em;
 		text-align: left;
@@ -108,76 +117,82 @@ body{
 
 /* スケールスライダー設定*/
 .scaling-slider-wrapper {
-    position: fixed;
-    left: 8px;
-    top: 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    z-index: +1;
-    padding: 4px;
-    pointer-events: auto;
+	position: fixed;
+	left: 8px;
+	top: 24px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	z-index: +1;
+	padding: 4px;
+	pointer-events: auto;
 }
 
 .vertical-rotator {
-    position: relative;
-    width: 12px;       /* 左側のコラム幅（トラック幅と合わせる） */
-    height: 50vh;      /* スライダーの高さ */
+	position: relative;
+	width: 12px;
+	/* 左側のコラム幅（トラック幅と合わせる） */
+	height: 50vh;
+	/* スライダーの高さ */
 }
 
 .vertical-slider {
-    -webkit-appearance: none;
-    appearance: none;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 50vh;    /* スライダーの長さ（回転前の横幅） */
-    height: 12px;   /* トラック厚さ（回転後は縦幅に見える） */
-    transform: translate(-50%, -50%) rotate(-90deg); /* 90度回転 */
-    transform-origin: center center;
-    margin: 0;
-    padding: 0;
-    cursor: pointer;
-    background: transparent;
+	-webkit-appearance: none;
+	appearance: none;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 50vh;
+	/* スライダーの長さ（回転前の横幅） */
+	height: 12px;
+	/* トラック厚さ（回転後は縦幅に見える） */
+	transform: translate(-50%, -50%) rotate(-90deg);
+	/* 90度回転 */
+	transform-origin: center center;
+	margin: 0;
+	padding: 0;
+	cursor: pointer;
+	background: transparent;
 }
 
 /* 回転後の横向きトラック（見た目は縦トラック） */
 .vertical-slider::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 12px;
-    background: #ddd;
-    border-radius: 99px;
+	width: 100%;
+	height: 12px;
+	background: #ddd;
+	border-radius: 99px;
 }
 
 /* 葉巻形サム（WebKit） */
 .vertical-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 16px;
-    height: 28px;
-    background: #3578e5;
-    border-radius: 99px;
-    border: 2px solid #fff;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
-    margin-top: -8px; /* トラック中央に合わせる調整 */
+	-webkit-appearance: none;
+	appearance: none;
+	width: 16px;
+	height: 28px;
+	background: #3578e5;
+	border-radius: 99px;
+	border: 2px solid #fff;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+	margin-top: -8px;
+	/* トラック中央に合わせる調整 */
 }
 
 /* Firefox 用 */
 .vertical-slider::-moz-range-track {
-    width: 100%;
-    height: 12px;
-    background: #ddd;
-    border-radius: 999px;
+	width: 100%;
+	height: 12px;
+	background: #ddd;
+	border-radius: 999px;
 }
 
 .vertical-slider::-moz-range-thumb {
-    width: 16px;
-    height: 28px;
-    background: #3578e5;
-    border-radius: 999px;
-    border: 2px solid #fff;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+	width: 16px;
+	height: 28px;
+	background: #3578e5;
+	border-radius: 999px;
+	border: 2px solid #fff;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
 /* スライダーカウンターの表示設定 */
@@ -188,43 +203,44 @@ body{
 	color: #333;
 	margin-top: 4px;
 
-	sup{
+	sup {
 		position: relative;
-		top: -0.6em; /* 上に移動する量。必要なら -0.4em〜-0.9em に調整 */
+		top: -0.6em;
+		/* 上に移動する量。必要なら -0.4em〜-0.9em に調整 */
 		font-size: 1.25rem;
 		line-height: 1;
 		display: inline-block;
 	}
 
-	.unit{
+	.unit {
 		font-size: 0.5em;
 		margin-left: 2px;
 	}
 }
 
 .back-to-top {
-    position: fixed;
-    left: 24px;
-    bottom: 24px;
-    z-index: 999;
-    background: #3578e5;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 12px;
-    font-size: 1.0rem;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
-    transition: transform 160ms ease, opacity 160ms ease;
-    opacity: 0.95;
+	position: fixed;
+	left: 24px;
+	bottom: 24px;
+	z-index: 999;
+	background: #3578e5;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	padding: 8px 12px;
+	font-size: 1.0rem;
+	cursor: pointer;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+	transition: transform 160ms ease, opacity 160ms ease;
+	opacity: 0.95;
 }
 
 /* 小画面ではTOPへ戻るボタンを小さくする */
 @media (max-width: 640px) {
-    .back-to-top {
-        left: 12px;
-        bottom: 12px;
-        padding: 6px 8px;
-        font-size: 0.9rem;
-    }
+	.back-to-top {
+		left: 12px;
+		bottom: 12px;
+		padding: 6px 8px;
+		font-size: 0.9rem;
+	}
 }

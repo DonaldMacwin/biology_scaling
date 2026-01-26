@@ -56,13 +56,13 @@ export default function Scaling(): ReactElement {
         2: "3",
         3: "6",
         4: "8",
-        5: "10",
+        5: "20",
     };
     const NEG_MAP_DISPLAY: Record<string, string> = {
         "-1": "0",
-        "-2": "-4",
-        "-3": "-6",
-        "-4": "-8",
+        "-2": "-2",
+        "-3": "-5",
+        "-4": "-6",
         "-5": "-10",
     };
     const mappedDisplay: string =
