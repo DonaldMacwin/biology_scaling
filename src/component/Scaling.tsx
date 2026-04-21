@@ -1,4 +1,4 @@
-import { useState, useEffect, type ReactElement } from "react";
+import { useState, useEffect, useRef, type ReactElement } from "react";
 import "../css/Scaling.css";
 
 const TOTAL_PAGES = 11;
@@ -10,6 +10,30 @@ export default function Scaling(): ReactElement {
     const [customExp, setCustomExp] = useState<string | null>(null);
     const [editingExp, setEditingExp] = useState<boolean>(false);
     const [editValue, setEditValue] = useState<string>("");
+    const footerFrameRef = useRef<HTMLIFrameElement | null>(null);
+
+    useEffect(() => {
+        const handleMessage = (event: MessageEvent): void => {
+            const frame = footerFrameRef.current;
+
+            if (!frame || event.source !== frame.contentWindow) {
+                return;
+            }
+
+            if (!event.data || event.data.type !== "footer-frame-height") {
+                return;
+            }
+
+            const nextHeight = Math.max(Number(event.data.height) || 0, 320);
+            frame.style.height = `${nextHeight}px`;
+        };
+
+        window.addEventListener("message", handleMessage);
+
+        return () => {
+            window.removeEventListener("message", handleMessage);
+        };
+    }, []);
 
     // スライダー位置に応じた HTML コンテンツを読み込む
     useEffect(() => {
@@ -34,16 +58,7 @@ export default function Scaling(): ReactElement {
             diff === 0 ? "html/default.html" : diff > 0 ? POS_PATH_MAP[diff] : NEG_PATH_MAP[diff];
 
         if (mappingPath) {
-            // Resolve mappingPath relative to this module when possible so built
-            // bundles using `base` produce correct asset URLs. Fallback to
-            // document.baseURI when import.meta.url is not available.
-            let resolved: string;
-            if (typeof import.meta !== 'undefined' && typeof (import.meta as any).url === 'string') {
-                resolved = new URL(mappingPath, (import.meta as any).url).toString();
-            } else {
-                const base = (typeof document !== 'undefined' && document.baseURI) ? document.baseURI : window.location.href;
-                resolved = new URL(mappingPath, base).toString();
-            }
+            const resolved = new URL(`${import.meta.env.BASE_URL}${mappingPath}`, window.location.origin).toString();
             fetch(resolved)
                 .then((r) => r.text())
                 .then((txt) => {
@@ -53,14 +68,14 @@ export default function Scaling(): ReactElement {
                     // to the /biology_scaling/dist/ location when injected into the page.
                     try {
                         const baseForResources = resolved.substring(0, resolved.lastIndexOf('/') + 1);
-                        fixed = fixed.replace(/(src|href)=(\")(?!(?:https?:|\/))([^\"]+)(\")/g, (_m, attr, _q1, rel, _q2) => {
+                        fixed = fixed.replace(/(src|href)=(")(?!(?:https?:|\/))([^"]+)(")/g, (_m, attr, _q1, rel) => {
                             try {
                                 return `${attr}="${new URL(rel, baseForResources).toString()}"`;
-                            } catch (e) {
+                            } catch {
                                 return _m;
                             }
                         });
-                    } catch (e) {
+                    } catch {
                         // ignore rewriting on any failure
                     }
                     const m = fixed.match(/<body[^>]*>((.|[\n\r])*)<\/body>/i);
@@ -117,15 +132,33 @@ export default function Scaling(): ReactElement {
         }
     };
 
+    const footerPath = import.meta.env.DEV
+        ? "/__asset_proxy__/13jellies/asset/html/footer.html"
+        : "https://cf268321.cloudfree.jp/13jellies/asset/html/footer.html";
+    const footerBasePath = "https://cf268321.cloudfree.jp/13jellies/asset/html/";
+    const footerFrameSrc = new URL(`${import.meta.env.BASE_URL}footer-frame.html`, window.location.origin);
+    footerFrameSrc.searchParams.set("footer", footerPath);
+    footerFrameSrc.searchParams.set("base", footerBasePath);
+
     return (
         <div className="scaling-root">
             <div className="scaling-content">
                 {plusminusHtml ? (
                     <section className="scaling-page active">
                         <div
-                            className="page-description"
+                            className="page-fragment"
                             dangerouslySetInnerHTML={{ __html: plusminusHtml || "" }}
                         />
+                        <div className="external-footer">
+                            <iframe
+                                ref={footerFrameRef}
+                                className="external-footer-frame"
+                                src={footerFrameSrc.toString()}
+                                title="External footer"
+                                loading="lazy"
+                                scrolling="no"
+                            />
+                        </div>
                     </section>
                 ) : null}
             </div>

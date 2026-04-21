@@ -49,6 +49,26 @@ body {
 	width: 96vw;
 }
 
+.page-fragment {
+	width: 100%;
+	min-width: 0;
+	flex: 0 0 auto;
+}
+
+.external-footer {
+	width: 100%;
+	margin-top: 48px;
+	flex: 0 0 auto;
+}
+
+.external-footer-frame {
+	display: block;
+	width: 100%;
+	min-height: 320px;
+	border: 0;
+	background: transparent;
+}
+
 /* メインテキストの設定 */
 .page-description {
 	width: 900px;

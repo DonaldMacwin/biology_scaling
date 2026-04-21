@@ -2,11 +2,19 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
-export default defineConfig({
-  // Set base to the deployed public path so generated asset URLs point
-  // to /biology_scaling/dist/ on the server.
-  base: '/biology_scaling/dist/',
+export default defineConfig(({ command }) => ({
+  // Use the deployed public path only for production builds.
+  base: command === 'build' ? '/biology_scaling/dist/' : '/',
   plugins: [react()],
+  server: {
+    proxy: {
+      '/__asset_proxy__': {
+        target: 'https://cf268321.cloudfree.jp',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/__asset_proxy__/, ''),
+      },
+    },
+  },
   build: {
     // disable css code-splitting so all css goes into one file
     cssCodeSplit: false,
@@ -30,4 +38,4 @@ export default defineConfig({
       },
     },
   },
-})
+}))

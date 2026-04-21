@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;500;700;900&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;500;700;900&display=swap">
+  <link rel="stylesheet" href="https://cf268321.cloudfree.jp/13jellies/asset/css/common.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const footerUrl = params.get('footer');
+      const baseParam = params.get('base');
+
+      if (!footerUrl) {
+        document.body.innerHTML = '<footer>Footer unavailable</footer>';
+        return;
+      }
+
+      const resolvedFooterUrl = new URL(footerUrl, window.location.origin).toString();
+      const baseHref = baseParam || new URL('./', resolvedFooterUrl).toString();
+      const base = document.createElement('base');
+      base.href = baseHref;
+      document.head.appendChild(base);
+
+      const postHeight = () => {
+        const height = Math.max(
+          document.documentElement.scrollHeight,
+          document.body.scrollHeight,
+          320
+        );
+
+        window.parent.postMessage({ type: 'footer-frame-height', height }, '*');
+      };
+
+      const applyFragment = (htmlText) => {
+        const parsed = new DOMParser().parseFromString(htmlText, 'text/html');
+        const assets = parsed.querySelectorAll('link[rel="stylesheet"], style');
+        assets.forEach((node) => {
+          document.head.appendChild(node.cloneNode(true));
+        });
+
+        document.body.innerHTML = parsed.body && parsed.body.innerHTML ? parsed.body.innerHTML : htmlText;
+
+        requestAnimationFrame(() => {
+          postHeight();
+          requestAnimationFrame(postHeight);
+        });
+      };
+
+      fetch(resolvedFooterUrl)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('footer fetch failed');
+          }
+
+          return response.text();
+        })
+        .then(applyFragment)
+        .catch(() => {
+          document.body.innerHTML = '<footer>Footer unavailable</footer>';
+          postHeight();
+        });
+
+      window.addEventListener('load', postHeight);
+
+      const observer = new ResizeObserver(() => {
+        postHeight();
+      });
+
+      observer.observe(document.documentElement);
+      observer.observe(document.body);
+    })();
+  </script>
+</body>
+</html>
