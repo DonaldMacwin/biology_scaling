@@ -16,28 +16,53 @@ export default function Scaling(): ReactElement {
         const diff = sliderPos - CENTER;
 
         const POS_PATH_MAP: Record<number, string> = {
-            1: "/html/power+01.html",
-            2: "/html/power+02.html",
-            3: "/html/power+03.html",
-            4: "/html/power+04.html",
-            5: "/html/power+05.html",
+            1: "html/power+01.html",
+            2: "html/power+02.html",
+            3: "html/power+03.html",
+            4: "html/power+04.html",
+            5: "html/power+05.html",
         };
 
         const NEG_PATH_MAP: Record<number, string> = {};
-        NEG_PATH_MAP[-1] = "/html/power-01.html";
-        NEG_PATH_MAP[-2] = "/html/power-02.html";
-        NEG_PATH_MAP[-3] = "/html/power-03.html";
-        NEG_PATH_MAP[-4] = "/html/power-04.html";
-        NEG_PATH_MAP[-5] = "/html/power-05.html";
+        NEG_PATH_MAP[-1] = "html/power-01.html";
+        NEG_PATH_MAP[-2] = "html/power-02.html";
+        NEG_PATH_MAP[-3] = "html/power-03.html";
+        NEG_PATH_MAP[-4] = "html/power-04.html";
+        NEG_PATH_MAP[-5] = "html/power-05.html";
 
         const mappingPath =
-            diff === 0 ? "/html/default.html" : diff > 0 ? POS_PATH_MAP[diff] : NEG_PATH_MAP[diff];
+            diff === 0 ? "html/default.html" : diff > 0 ? POS_PATH_MAP[diff] : NEG_PATH_MAP[diff];
 
         if (mappingPath) {
-            fetch(mappingPath)
+            // Resolve mappingPath relative to this module when possible so built
+            // bundles using `base` produce correct asset URLs. Fallback to
+            // document.baseURI when import.meta.url is not available.
+            let resolved: string;
+            if (typeof import.meta !== 'undefined' && typeof (import.meta as any).url === 'string') {
+                resolved = new URL(mappingPath, (import.meta as any).url).toString();
+            } else {
+                const base = (typeof document !== 'undefined' && document.baseURI) ? document.baseURI : window.location.href;
+                resolved = new URL(mappingPath, base).toString();
+            }
+            fetch(resolved)
                 .then((r) => r.text())
                 .then((txt) => {
-                    const fixed = txt.replace(/className=/g, "class=");
+                    let fixed = txt.replace(/className=/g, "class=");
+                    // Rewrite relative src/href in the fetched fragment to absolute URLs
+                    // using the resolved URL as base so images/scripts/styles resolve
+                    // to the /biology_scaling/dist/ location when injected into the page.
+                    try {
+                        const baseForResources = resolved.substring(0, resolved.lastIndexOf('/') + 1);
+                        fixed = fixed.replace(/(src|href)=(\")(?!(?:https?:|\/))([^\"]+)(\")/g, (_m, attr, _q1, rel, _q2) => {
+                            try {
+                                return `${attr}="${new URL(rel, baseForResources).toString()}"`;
+                            } catch (e) {
+                                return _m;
+                            }
+                        });
+                    } catch (e) {
+                        // ignore rewriting on any failure
+                    }
                     const m = fixed.match(/<body[^>]*>((.|[\n\r])*)<\/body>/i);
                     const content = m ? m[1] : fixed;
                     setPlusminusHtml(content);
@@ -60,7 +85,7 @@ export default function Scaling(): ReactElement {
     };
     const NEG_MAP_DISPLAY: Record<string, string> = {
         "-1": "0",
-        "-2": "-2",
+        "-2": "-3",
         "-3": "-5",
         "-4": "-6",
         "-5": "-10",
