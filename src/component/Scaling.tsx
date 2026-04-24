@@ -24,8 +24,15 @@ export default function Scaling(): ReactElement {
                 return;
             }
 
-            const nextHeight = Math.max(Number(event.data.height) || 0, 320);
-            frame.style.height = `${nextHeight}px`;
+            // const nextHeight = Math.max(Number(event.data.height) || 0, 320);
+            // Do not set inline height on the iframe to avoid injecting
+            // style="height: ...". Keep iframe sizing to CSS or the
+            // iframe's own content messaging if needed.
+            /*try {
+                frame.style.removeProperty("height");
+            } catch {
+                // ignore
+            }*/
         };
 
         window.addEventListener("message", handleMessage);

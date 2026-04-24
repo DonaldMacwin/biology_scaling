@@ -10,7 +10,7 @@ body {
 .scaling-root {
 	position: relative;
 	height: 100vh;
-	width: 100%;
+	width: stretch;
 	background: #ffffff;
 	box-sizing: border-box;
 	padding-left: 48px;
@@ -50,29 +50,31 @@ body {
 }
 
 .page-fragment {
-	width: 100%;
-	min-width: 0;
+	width: stretch;
+	max-width: 900px;
+	/*min-width: 0;*/
 	flex: 0 0 auto;
+	margin: 0 auto;
+	box-sizing: border-box;
 }
 
 .external-footer {
-	width: 100%;
-	margin-top: 48px;
+	width: stretch;
+	margin-top: 100px;
 	flex: 0 0 auto;
 }
 
 .external-footer-frame {
 	display: block;
-	width: 100%;
-	min-height: 320px;
+	width: stretch;
+	min-height: 350px;
 	border: 0;
 	background: transparent;
 }
 
 /* メインテキストの設定 */
 .page-description {
-	width: 900px;
-	font-size: 1.2rem;
+	font-size: 1.0rem;
 	font-weight: 400;
 	line-height: 2.5;
 	margin: 8px auto 0 auto;
@@ -97,6 +99,7 @@ body {
 }
 
 .index-box {
+	font-size: medium;
 	margin: 2.0em auto 0 auto;
 	padding: 2.0em;
 	background: #efefef;
@@ -116,7 +119,7 @@ body {
 }
 
 .data-table {
-	width: 100%;
+	width: stretch;
 	margin: 1.0em auto 0 auto;
 	border-collapse: collapse;
 	box-sizing: border-box;
@@ -178,7 +181,7 @@ body {
 
 /* 回転後の横向きトラック（見た目は縦トラック） */
 .vertical-slider::-webkit-slider-runnable-track {
-	width: 100%;
+	width: stretch;
 	height: 12px;
 	background: #ddd;
 	border-radius: 99px;
@@ -200,7 +203,7 @@ body {
 
 /* Firefox 用 */
 .vertical-slider::-moz-range-track {
-	width: 100%;
+	width: stretch;
 	height: 12px;
 	background: #ddd;
 	border-radius: 999px;
