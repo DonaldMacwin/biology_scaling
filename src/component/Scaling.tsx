@@ -75,7 +75,15 @@ export default function Scaling(): ReactElement {
                     // to the /biology_scaling/dist/ location when injected into the page.
                     try {
                         const baseForResources = resolved.substring(0, resolved.lastIndexOf('/') + 1);
-                        fixed = fixed.replace(/(src|href)=(")(?!(?:https?:|\/))([^"]+)(")/g, (_m, attr, _q1, rel) => {
+                        fixed = fixed.replace(/(src|href)=(")([^"]+)(")/g, (_m, attr, _q1, rel) => {
+                            if (
+                                rel.startsWith("#") ||
+                                rel.startsWith("/") ||
+                                /^[a-z][a-z0-9+.-]*:/i.test(rel)
+                            ) {
+                                return _m;
+                            }
+
                             try {
                                 return `${attr}="${new URL(rel, baseForResources).toString()}"`;
                             } catch {
